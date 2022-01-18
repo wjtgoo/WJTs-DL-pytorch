@@ -1,1 +1,1 @@
-# WJTs DL learning by Pytorch
+# WJTs Deep Learning Project by Pytorch
