@@ -4,22 +4,23 @@ import torchvision.transforms as transforms
 import numpy as np
 from PIL import Image
 import os
+import cv2
 
 '''
 1. torchvision's Exist Datasets
     - FashionMNIST
     - ...
 '''
-def offical_exist_data(data_name='FashionMNIST', path='../../../Datasets/FashionMNIST', batch_size=256):
+def offical_exist_data(data_name='FashionMNIST', batch_size=256):
     '''
     Load data in torchvision
     data type:
         [0,1] torch.float 
     '''
     if data_name == 'FashionMNIST':
-        train = torchvision.datasets.FashionMNIST(root=path,train=True,download=True,
+        train = torchvision.datasets.FashionMNIST(root='../../Datasets/FashionMNIST',train=True,download=True,
                                               transform=transforms.ToTensor())
-        test = torchvision.datasets.FashionMNIST(root=path,train=False,download=True,
+        test = torchvision.datasets.FashionMNIST(root='../../Datasets/FashionMNIST',train=False,download=True,
                                               transform=transforms.ToTensor())
     # elif ...
     # ...
@@ -164,3 +165,26 @@ def self_define_datasets_all_in_one(features=None, labels=None, # Load data in m
     train_iter = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
     test_iter = torch.utils.data.DataLoader(test_iter, batch_size=batch_size, shuffle=True)
     return train_iter, test_iter
+
+
+# transform image data that can be used directily by model
+def trans_data(img, img_size=(28,28), img_type='L'):
+    '''
+    transform image data that can be used directily by model
+    input:
+        img: opencv or PIL image
+        img_size: default (28,28)
+        img_type: 'L': gray(defualt)
+                  'RGB': 3-channels img
+    '''
+    # if img is opencv type or numpy type transform it to PIL
+    if isinstance(img, np.ndarray):
+        # cv2's iamge type is BGR but PIL's image type is RGB
+        img = Image.fromarray(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
+    # convert to img_type
+    img = img.convert(img_type)
+    # resize image
+    img = img.resize(img_size,Image.ANTIALIAS)
+    ToTensor = transforms.ToTensor()
+    image = ToTensor(img)
+    return image

@@ -4,17 +4,18 @@ import time
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+
 def evaluate_accuracy(data_iter, net, device=device):
     '''
     Evaluate the model accuracy in test datasets
     '''
     acc_sum, n = 0.0, 0
     with torch.no_grad():
-        net.eval() # 测试模式，此时会固定住dropout，BN的值
+        net.eval()  # 测试模式，此时会固定住dropout，BN的值
         for X, y in data_iter:
             acc_sum += (net(X.to(device)).argmax(dim=1) == y.to(device)).float().sum().cpu().item()
             n += y.shape[0]
-        net.train() # 改回训练模式
+        net.train()  # 改回训练模式
     return acc_sum / n
 
 
