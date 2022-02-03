@@ -2,28 +2,6 @@ import torch
 from torch import nn
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-# use cnn model to predict image data
-def use_model(img_arr, net):
-    device = next(net.parameters()).device
-    img_arr.to(device)
-    '''
-    input: 
-            img_arr: need to be transformed from dataloader.trans_data function
-                     or it can be torch's offical data transformed by ToTensor
-                     !! it can be a batch of images or one image
-                     
-            net: the model you trained
-    '''
-    # add one dimension at axis 0
-    if len(img_arr.shape)==3:
-        img_arr = torch.unsqueeze(img_arr, dim=0)
-    with torch.no_grad():
-        out = net(img_arr)
-        result = torch.argmax(out,dim=-1)
-    return result
-
-
 # Lenet
 class LeNet(nn.Module):
     def __init__(self,img_size=(28,28)):

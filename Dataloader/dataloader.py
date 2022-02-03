@@ -11,17 +11,25 @@ import cv2
     - FashionMNIST
     - ...
 '''
-def offical_exist_data(data_name='FashionMNIST', batch_size=256):
+def offical_exist_data(data_name='FashionMNIST', batch_size=256, resize=None):
     '''
     Load data in torchvision
     data type:
         [0,1] torch.float 
     '''
+    # transform settings
+    trans = []
+    if resize:
+        trans.append(torchvision.transforms.Resize(size=resize))
+    trans.append(torchvision.transforms.ToTensor())
+
+    transform = torchvision.transforms.Compose(trans)
+    
     if data_name == 'FashionMNIST':
         train = torchvision.datasets.FashionMNIST(root='../../Datasets/FashionMNIST',train=True,download=True,
-                                              transform=transforms.ToTensor())
+                                              transform=transform)
         test = torchvision.datasets.FashionMNIST(root='../../Datasets/FashionMNIST',train=False,download=True,
-                                              transform=transforms.ToTensor())
+                                              transform=transform)
     # elif ...
     # ...
     
